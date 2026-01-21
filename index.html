@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Happy Rose Day 🌹</title>
+
+<style>
+body{
+  margin:0;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:flex-start;
+  padding-top:120px;
+  background:radial-gradient(circle at top, #2b0a1f, #0b0207);
+  overflow:hidden;
+  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color:#fff;
+}
+
+/* overlay animation */
+#overlayAnimation{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:0;
+}
+#overlayAnimation canvas{
+  position:fixed;
+  inset:0;
+  background:transparent;
+}
+
+/* content above overlay */
+.container,
+h1.title{
+  position:relative;
+  z-index:1;
+}
+
+.container{
+  display:flex;
+  align-items:flex-start;
+  justify-content:center;
+  gap:80px;
+  margin-top:40px;
+}
+
+h1.title{
+  position:fixed;
+  top:24px;
+  left:50%;
+  transform:translateX(-50%);
+  font-size:2.2rem;
+  line-height:1.3;
+  text-align:center;
+  max-width:90vw;
+  color:#ff6b9c;
+  text-shadow:0 0 25px rgba(255,107,156,.7);
+}
+
+svg{
+  width:290px;
+  height:540px;
+  margin:30px auto;
+  overflow:visible;
+}
+
+/* rose animations */
+.rose{transform-origin:bottom center;animation:sway 7s ease-in-out infinite alternate;}
+.stem{stroke:#1e7f4d;stroke-width:6;stroke-linecap:round;transform-origin:bottom center;transform:scaleY(0);animation:growStem 3.2s ease-out forwards;}
+.leaf{fill:url(#leafGrad);transform-origin:center;transform:scale(0);opacity:0;animation:leafGrow 1.4s ease-out forwards;}
+.leaf.l1{animation-delay:2.2s;}
+.leaf.l2{animation-delay:2.5s;}
+
+/* petals (FINAL VERSION YOU APPROVED) */
+.petal{
+  fill:url(#petalGrad);
+  transform-origin:center bottom;
+  transform:scale(0);
+  opacity:0;
+  animation:
+    bloomPetal 3.5s cubic-bezier(.22,.61,.36,1) forwards,
+    heartbeat 2.8s ease-in-out infinite;
+  animation-delay:4.2s, 8s;
+}
+.p1{ animation-delay:4.2s, 8s; }
+.p2{ animation-delay:4.6s, 8s; }
+.p3{ animation-delay:5.0s, 8s; }
+.p4{ animation-delay:5.4s, 8s; }
+.p5{ animation-delay:5.8s, 8s; }
+
+@keyframes growStem{to{transform:scaleY(1)}}
+@keyframes leafGrow{to{transform:scale(1);opacity:1}}
+@keyframes bloomPetal{
+  from{opacity:0;transform:translateY(20px) scale(0) rotate(-18deg)}
+  to{opacity:1;transform:translateY(0) scale(1) rotate(0deg)}
+}
+@keyframes heartbeat{
+  0%,100%{filter:drop-shadow(0 0 4px rgba(255,107,156,.4))}
+  50%{filter:drop-shadow(0 0 14px rgba(255,107,156,.85))}
+}
+@keyframes sway{from{transform:rotate(-1.5deg)}to{transform:rotate(1.5deg)}}
+
+/* typing */
+.typing{
+  font-size:1.15rem;
+  line-height:2;
+  max-width:480px;
+  color:#ffd6e6;
+  min-height:12em;
+  margin-top:40px;
+}
+.cursor{
+  display:inline-block;
+  width:2px;
+  height:1em;
+  background:#ff6b9c;
+  animation:blink 1s infinite;
+}
+@keyframes blink{50%{opacity:0}}
+
+/* falling petals */
+.petal-fall{
+  position:fixed;
+  top:-10px;
+  width:14px;
+  height:18px;
+  background:linear-gradient(#ffb3c9,#c2185b);
+  border-radius:50% 50% 50% 0;
+  transform:rotate(45deg);
+  opacity:.8;
+  animation:fall linear forwards;
+}
+@keyframes fall{
+  0%{transform:translateY(0) translateX(0) rotate(0deg);opacity:.9}
+  50%{transform:translateY(55vh) translateX(40px) rotate(180deg);opacity:.7}
+  100%{transform:translateY(110vh) translateX(-40px) rotate(360deg);opacity:0}
+}
+</style>
+</head>
+
+<body>
+
+<!-- ================= OVERLAY (FINALIZED & SCOPED) ================= -->
+<div id="overlayAnimation">
+<canvas></canvas>
+<script>
+var c = document.querySelector("#overlayAnimation canvas"),
+    a = c.getContext("2d", { alpha: true });
+
+var e = [], h = [],
+    O, Q,
+    v = 32,
+    M = Math,
+    R = M.random,
+    C = M.cos,
+    Y = 6.3;
+
+function resize() {
+  O = c.width = innerWidth;
+  Q = c.height = innerHeight;
+}
+resize();
+addEventListener("resize", resize);
+
+/* ONLY CHANGE IS HERE (×2 UNIFORM SCALE) */
+for (i = 0; i < Y; i += 0.2)
+  h.push([
+    O / 2 + 360 * M.pow(M.sin(i), 3),            /* 180 × 2 */
+    Q / 2 - (15 * C(i) - 5 * C(2*i) - 2 * C(3*i) - C(4*i)) * 20 /* 10 × 2 */
+  ]);
+
+for (i = 0; i < v;) {
+  x = R() * O;
+  y = R() * Q;
+  H = 80 * (i / v) + 280;
+  S = 40 * R() + 60;
+  B = 60 * R() + 20;
+  f = [];
+
+  for (k = 0; k < v;)
+    f[k++] = {
+      x: x, y: y, X: 0, Y: 0,
+      R: 1 - k / v + 1,
+      S: R() + 1,
+      q: ~~(R() * v),
+      D: 2 * (i % 2) - 1,
+      F: 0.2 * R() + 0.7,
+      f: `hsla(${~~H},${~~S}%,${~~B}%,0.8)`
+    };
+
+  e[i++] = f;
+}
+
+function draw(p) {
+  a.fillStyle = p.f;
+  a.beginPath();
+  a.arc(p.x, p.y, p.R, 0, Y);
+  a.fill();
+}
+
+setInterval(function () {
+  a.clearRect(0, 0, O, Q);
+  a.globalCompositeOperation = "destination-out";
+  a.fillStyle = "rgba(0,0,0,0.12)";
+  a.fillRect(0, 0, O, Q);
+  a.globalCompositeOperation = "lighter";
+
+  for (i = v; i--;) {
+    f = e[i];
+    u = f[0];
+    q = h[u.q];
+    D = u.x - q[0];
+    E = u.y - q[1];
+    G = M.sqrt(D*D + E*E);
+
+    if (G < 10) {
+      R() > 0.95 ? u.q = ~~(R() * v) :
+      R() > 0.99 && (u.D *= -1),
+      u.q += u.D,
+      u.q %= v,
+      u.q < 0 && (u.q += v);
+    }
+
+    u.X += -D / G * u.S;
+    u.Y += -E / G * u.S;
+    u.x += u.X;
+    u.y += u.Y;
+    draw(u);
+    u.X *= u.F;
+    u.Y *= u.F;
+
+    for (k = 0; k < v - 1;) {
+      T = f[k];
+      N = f[++k];
+      N.x -= 0.7 * (N.x - T.x);
+      N.y -= 0.7 * (N.y - T.y);
+      draw(N);
+    }
+  }
+}, 25);
+</script>
+</div>
+<!-- ================= END OVERLAY ================= -->
+
+<h1 class="title">Happy Rose Day to My Dearest Dharshu ❤️🌹</h1>
+
+<div class="container">
+<svg viewBox="0 0 200 300">
+<defs>
+<linearGradient id="petalGrad" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0%" stop-color="#ffb3c9"/>
+<stop offset="100%" stop-color="#c2185b"/>
+</linearGradient>
+<linearGradient id="leafGrad" x1="0" y1="0" x2="1" y2="1">
+<stop offset="0%" stop-color="#2ecc71"/>
+<stop offset="100%" stop-color="#145a32"/>
+</linearGradient>
+</defs>
+<g class="rose">
+<path class="stem" d="M100 280 C100 220 100 180 100 140"/>
+<path class="leaf l1" d="M100 200 C60 180 50 150 80 145 C95 150 105 170 100 200"/>
+<path class="leaf l2" d="M100 220 C140 200 155 170 120 160 C105 165 95 185 100 220"/>
+<ellipse class="petal p1" cx="100" cy="120" rx="28" ry="40"/>
+<ellipse class="petal p2" cx="80" cy="120" rx="24" ry="36"/>
+<ellipse class="petal p3" cx="120" cy="120" rx="24" ry="36"/>
+<ellipse class="petal p4" cx="90" cy="100" rx="22" ry="30"/>
+<ellipse class="petal p5" cx="110" cy="100" rx="22" ry="30"/>
+</g>
+</svg>
+
+<div class="typing" id="typing"></div>
+</div>
+
+<script>
+const text=" Among thousands of roses, you are the rare one radiant, unforgettable, the only bloom my heart truly recognizes 🌹❤️, Like this rose, my feelings for you unfold more beautifully with every moment, growing gentle, deep, and endlessly special 💕, Somewhere between every heartbeat and every quiet thought, Dharshu, my love for you keeps blooming—slow, steady, and true 🌸💖, As each petal opens, my love grows deeper, carrying every unspoken emotion and every tender promise I hold for you 🤍✨, And when the last petal finally falls, my love will still remain rooted in my heart, forever yours. and know this you are not one of those millions, from all those millions you are the one who stole my heart no one is perfect or better than you so dont ever think that my love for you will ever go away its keeps growing and growing each and everyday, i'm just diving deeper in loving you as the day passes❤️🌹";
+let ti=0,el=document.getElementById("typing");
+function type(){
+  if(ti<text.length){
+    el.textContent=text.slice(0,++ti);
+    el.appendChild(Object.assign(document.createElement("span"),{className:"cursor"}));
+    setTimeout(type,70);
+  }
+}
+setTimeout(type,3000);
+
+setInterval(()=>{
+  const p=document.createElement("div");
+  p.className="petal-fall";
+  p.style.left=Math.random()*100+"vw";
+  p.style.animationDuration=8+Math.random()*6+"s";
+  document.body.appendChild(p);
+  setTimeout(()=>p.remove(),15000);
+},600);
+</script>
+
+<audio id="bgMusic" autoplay loop muted>
+<source src="love.mp3" type="audio/mpeg">
+</audio>
+<script>
+const music=document.getElementById("bgMusic");
+let volume=0;music.volume=0;
+function startMusic(){
+  music.muted=false;music.play().catch(()=>{});
+  const f=setInterval(()=>{volume+=0.02;music.volume=Math.min(volume,1);volume>=1&&clearInterval(f)},200);
+}
+addEventListener("load",startMusic);
+addEventListener("click",startMusic,{once:true});
+</script>
+
+</body>
+</html>
